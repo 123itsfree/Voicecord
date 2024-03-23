@@ -7,7 +7,7 @@ import websocket
 from keep_alive import keep_alive
 
 # Define constants
-STATUS = "online"  # online/dnd/idle
+STATUS = "idle"  # online/dnd/idle
 GUILD_ID = 730385656605311017
 CHANNEL_ID = 916322268462870568
 SELF_MUTE = True
@@ -36,14 +36,16 @@ userid = userinfo["id"]
 
 # Define function to join voice channel
 def joiner(token, status):
-    ws = websocket.WebSocketApp('wss://gateway.discord.gg/?v=9&encoding=json')
+    ws = websocket.WebSocket()
 
     def on_message(ws, message):
         print(message)
 
     ws.on_message = on_message
+    ws.connect('wss://gateway.discord.gg/?v=9&encoding=json')
 
-    ws.run_forever()
+    while True:
+        time.sleep(5)  # Adjust as needed
 
 # Define main function
 def run_joiner():
@@ -51,7 +53,6 @@ def run_joiner():
     print(f"Logged in as {username}#{discriminator} ({userid}).")
     while True:
         joiner(usertoken, STATUS)
-        time.sleep(30)
 
 # Keep the bot alive
 keep_alive()
