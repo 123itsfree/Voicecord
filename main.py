@@ -36,40 +36,14 @@ userid = userinfo["id"]
 
 # Define function to join voice channel
 def joiner(token, status):
-    ws = websocket.WebSocket()
-    ws.connect('wss://gateway.discord.gg/?v=9&encoding=json')
-    start = json.loads(ws.recv())
-    heartbeat = start['d']['heartbeat_interval']
-    auth = {
-        "op": 2,
-        "d": {
-            "token": token,
-            "properties": {
-                "$os": "Windows 10",
-                "$browser": "Google Chrome",
-                "$device": "Windows"
-            },
-            "presence": {
-                "status": status,
-                "afk": False
-            }
-        },
-        "s": None,
-        "t": None
-    }
-    vc = {
-        "op": 4,
-        "d": {
-            "guild_id": GUILD_ID,
-            "channel_id": CHANNEL_ID,
-            "self_mute": SELF_MUTE,
-            "self_deaf": SELF_DEAF
-        }
-    }
-    ws.send(json.dumps(auth))
-    ws.send(json.dumps(vc))
-    time.sleep(heartbeat / 1000)
-    ws.send(json.dumps({"op": 1, "d": None}))
+    ws = websocket.WebSocketApp('wss://gateway.discord.gg/?v=9&encoding=json')
+
+    def on_message(ws, message):
+        print(message)
+
+    ws.on_message = on_message
+
+    ws.run_forever()
 
 # Define main function
 def run_joiner():
